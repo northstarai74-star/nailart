@@ -48,10 +48,10 @@
 .bl-nav__cta{ display:inline-flex; align-items:center; gap:.5rem; }
 
 /* ---------- Buttons ---------- */
-.bl-btn{ display:inline-flex; align-items:center; gap:.6rem; padding: .85rem 1.6rem; border-radius: 999px; background: var(--bl-ink); color:#FFFBF8; font-size: .88rem; letter-spacing:.01em; transition: transform .35s var(--bl-ease), background .25s; }
-.bl-btn:hover{ background: var(--bl-accent); transform: translateY(-2px); }
+.bl-btn{ display:inline-flex; align-items:center; gap:.6rem; padding: .85rem 1.6rem; border-radius: 999px; background: var(--bl-accent); color: var(--bl-ink); font-size: .88rem; font-weight:600; letter-spacing:.01em; transition: transform .35s var(--bl-ease), background .25s; }
+.bl-btn:hover{ background: var(--bl-accent-2); transform: translateY(-2px); }
 .bl-btn--outline{ background: transparent; border: 1px solid var(--bl-line); color: var(--bl-ink); }
-.bl-btn--outline:hover{ background: var(--bl-ink); color:#FFFBF8; border-color: var(--bl-ink); }
+.bl-btn--outline:hover{ background: var(--bl-accent-2); color: var(--bl-ink); border-color: var(--bl-accent-2); }
 
 /* ---------- Procedural art mount (art.js) ---------- */
 .bl .art{ width:100%; height:100%; display:block; overflow:hidden; background: var(--bl-bg-alt); }
