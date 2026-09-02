@@ -19,6 +19,11 @@
   --gold:        #C39A5A;
   --lilac:       #8F7BB0;
 
+  --success:      #2F7D53;
+  --success-soft: #E3F1E8;
+  --danger:       #B23A3A;
+  --danger-soft:  #F8E6E6;
+
   --radius-sm: 8px;
   --radius:    16px;
   --radius-lg: 28px;
@@ -478,6 +483,23 @@ body.menu-open { overflow: hidden; }
 .form__status { font-size: var(--step-0); padding: .85rem 1rem; border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent); }
 .form__status[hidden] { display: none; }
 .error { color: var(--accent); font-size: var(--step--1); }
+
+/* ---------- Certificate check ---------- */
+.cert-result { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--line); display: grid; gap: 1rem; }
+.cert-pill {
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .35rem .8rem; border-radius: var(--radius-pill);
+  font-size: var(--step--1); font-weight: 500;
+}
+.cert-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.cert-pill--valid   { background: var(--success-soft); color: var(--success); }
+.cert-pill--soon    { background: #F6EEDF; color: #8A6A2F; }
+.cert-pill--expired { background: var(--danger-soft); color: var(--danger); }
+.cert-pill--unknown { background: var(--bg-sunk); color: var(--muted); }
+.cert-result__msg { font-size: var(--step-0); color: var(--ink-soft); }
+.cert-result__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem 1.5rem; margin: 0; }
+.cert-result__grid dt { font-size: var(--step--1); color: var(--muted); }
+.cert-result__grid dd { margin: .25rem 0 0; font-weight: 500; }
 
 /* ---------- Footer ---------- */
 .site-footer { background: var(--ink); color: rgba(247, 242, 239, .72); padding-block: clamp(2.25rem, 4vw, 3.5rem) 1.5rem; }

@@ -233,6 +233,84 @@
     });
   }
 
+  /* ---------------- certificate check ---------------- */
+  var CERTIFICATES = [
+    { id: 'LCA-2021-0142', surname: 'Meadow',     level: 'Artist Diploma',    issued: '2021-05-14', years: 3 },
+    { id: 'LCA-2023-0091', surname: 'Byrne',      level: 'Artist Diploma',    issued: '2023-11-02', years: 3 },
+    { id: 'LCA-2024-0207', surname: 'Okafor',     level: 'Master &amp; Business', issued: '2024-03-20', years: 5 },
+    { id: 'LCA-2025-0338', surname: 'Fitzgerald', level: 'Foundation',        issued: '2025-09-01', years: 2 }
+  ];
+
+  function formatCertDate(d) {
+    return d.toLocaleDateString('en-IE', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function initCertCheck() {
+    var form = document.getElementById('cert-form');
+    var result = document.getElementById('cert-result');
+    if (!form || !result) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var valid = true;
+      form.querySelectorAll('[required]').forEach(function (input) {
+        var msg = input.parentElement.querySelector('.error');
+        var ok = String(input.value).trim() !== '';
+        if (msg) msg.textContent = ok ? '' : (input.dataset.error || 'This field is required.');
+        input.setAttribute('aria-invalid', String(!ok));
+        if (!ok && valid) input.focus();
+        valid = valid && ok;
+      });
+      if (!valid) return;
+
+      var number = form.querySelector('#cert-number').value.trim().toUpperCase();
+      var surname = form.querySelector('#cert-surname').value.trim().toLowerCase();
+      var record = CERTIFICATES.filter(function (c) {
+        return c.id === number && c.surname.toLowerCase() === surname;
+      })[0];
+
+      result.hidden = false;
+
+      if (!record) {
+        result.innerHTML =
+          '<span class="cert-pill cert-pill--unknown">No match</span>' +
+          '<p class="cert-result__msg">We couldn&rsquo;t find a certificate with that number and surname. Double-check both against the printed certificate, or <a class="link-arrow" href="contact.html?intent=course">contact the academy</a>.</p>';
+        return;
+      }
+
+      var issued = new Date(record.issued + 'T00:00:00');
+      var expires = new Date(issued);
+      expires.setFullYear(expires.getFullYear() + record.years);
+      var daysLeft = Math.round((expires - new Date()) / 86400000);
+
+      var pillClass, pillLabel, statusMsg;
+      if (daysLeft < 0) {
+        pillClass = 'cert-pill--expired';
+        pillLabel = 'Expired';
+        statusMsg = 'This certificate expired on ' + formatCertDate(expires) + '. A refresher module is required before it can be renewed.';
+      } else if (daysLeft <= 90) {
+        pillClass = 'cert-pill--soon';
+        pillLabel = 'Expiring soon';
+        statusMsg = 'This certificate is valid but expires in ' + daysLeft + ' day' + (daysLeft === 1 ? '' : 's') +
+          ', on ' + formatCertDate(expires) + '. Renewal is recommended now.';
+      } else {
+        pillClass = 'cert-pill--valid';
+        pillLabel = 'Valid';
+        statusMsg = 'This certificate is valid until ' + formatCertDate(expires) + '.';
+      }
+
+      result.innerHTML =
+        '<span class="cert-pill ' + pillClass + '">' + pillLabel + '</span>' +
+        '<p class="cert-result__msg">' + statusMsg + '</p>' +
+        '<dl class="cert-result__grid">' +
+          '<div><dt>Level</dt><dd>' + record.level + '</dd></div>' +
+          '<div><dt>Issued</dt><dd>' + formatCertDate(issued) + '</dd></div>' +
+          '<div><dt>Validity period</dt><dd>' + record.years + ' year' + (record.years === 1 ? '' : 's') + ' from issue</dd></div>' +
+          '<div><dt>Expires</dt><dd>' + formatCertDate(expires) + '</dd></div>' +
+        '</dl>';
+    });
+  }
+
   /* ---------------- misc ---------------- */
   function initYear() {
     document.querySelectorAll('[data-year]').forEach(function (n) {
@@ -247,6 +325,7 @@
     initCounters();
     initGallery();
     initForm();
+    initCertCheck();
     initYear();
     if (window.NailArt) window.NailArt.mount(document);
     initReveal();

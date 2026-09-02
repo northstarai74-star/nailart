@@ -264,6 +264,37 @@
   </div>
 </section>
 
+<!-- ============================== CERTIFICATE CHECK ============================== -->
+<section class="section section--sunk" id="verify">
+  <div class="wrap split">
+    <div class="stack" style="--stack:1.25rem" data-reveal>
+      <span class="eyebrow">Certification</span>
+      <h2 class="h2">Check a certificate's validity.</h2>
+      <p class="lede muted">Every graduate receives a numbered certificate with a set validity period — two years for Foundation, three for the Artist Diploma, five for Master &amp; Business. Employers and clients can confirm a certificate is current here.</p>
+      <p class="muted" style="font-size:var(--step--1)">Your certificate number is printed beneath the signature line, in the format LCA-YYYY-NNNN.</p>
+    </div>
+
+    <div class="card" data-reveal data-reveal-delay="80">
+      <form class="form" id="cert-form" novalidate>
+        <div class="field__row">
+          <div class="field">
+            <label for="cert-number">Certificate number</label>
+            <input type="text" id="cert-number" name="cert-number" required placeholder="LCA-2024-0207" autocomplete="off" data-error="Enter the certificate number.">
+            <span class="error" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="cert-surname">Surname on certificate</label>
+            <input type="text" id="cert-surname" name="cert-surname" required placeholder="Okafor" autocomplete="off" data-error="Enter the surname on the certificate.">
+            <span class="error" aria-live="polite"></span>
+          </div>
+        </div>
+        <button class="btn" type="submit" style="justify-self:start">Check certificate</button>
+      </form>
+      <div class="cert-result" id="cert-result" hidden></div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================== FAQ ============================== -->
 <section class="section" id="faq">
   <div class="wrap">
@@ -337,7 +368,7 @@
           <li><a href="gallery.html">Gallery</a></li>
           <li><a href="index.html#services">Services</a></li>
           <li><a href="contact.html?intent=appointment">Book a set</a></li>
-          <li><a href="index.html#pricing">Price list</a></li>
+          <li><a href="academy.html#verify">Verify a certificate</a></li>
         </ul>
       </div>
 
