@@ -241,6 +241,43 @@
     { id: 'LCA-2025-0338', name: 'Elena Fitzgerald', level: 'Foundation',        issued: '2025-09-01', years: 2 }
   ];
 
+  function updateCertificateDisplay(record) {
+    var certViz = document.querySelector('.certificate');
+    if (!certViz || !record) return;
+
+    var issued = new Date(record.issued + 'T00:00:00');
+    certViz.querySelector('.certificate__name').textContent = record.name;
+    certViz.querySelector('.certificate__course').textContent = record.level + ' programme';
+    certViz.querySelector('.certificate__number').textContent = 'Certificate No. ' + record.id + ' — verify it below';
+    certViz.querySelector('.certificate__sig-line:first-of-type').textContent = 'Nia Fairweather';
+    var dateEl = certViz.querySelectorAll('.certificate__sig-line')[1];
+    if (dateEl) dateEl.textContent = formatCertDate(issued);
+  }
+
+  function renderCertificateGallery() {
+    var list = document.getElementById('cert-list');
+    if (!list) return;
+
+    list.innerHTML = '';
+    CERTIFICATES.forEach(function (cert) {
+      var card = document.createElement('button');
+      card.className = 'cert-card';
+      card.type = 'button';
+      card.style.cssText = 'background:transparent;border:2px solid #E5DDD8;border-radius:0.5rem;padding:1.5rem;text-align:left;cursor:pointer;transition:all 0.2s;font-family:inherit;font-size:1rem';
+      card.onmouseover = function () { this.style.borderColor = '#B8465C'; this.style.boxShadow = '0 4px 12px rgba(184,70,92,0.1)'; };
+      card.onmouseout = function () { this.style.borderColor = '#E5DDD8'; this.style.boxShadow = 'none'; };
+      card.onclick = function () { updateCertificateDisplay(cert); };
+
+      card.innerHTML =
+        '<div style="font-size:0.875rem;color:#8E7A74;margin-bottom:0.5rem">Certificate</div>' +
+        '<div style="font-weight:600;color:#17110E;margin-bottom:0.75rem;font-size:1.125rem">' + cert.name + '</div>' +
+        '<div style="font-size:0.875rem;color:#8E7A74;word-break:break-all">' + cert.id + '</div>' +
+        '<div style="font-size:0.875rem;color:#B8465C;margin-top:0.75rem">' + cert.level + '</div>';
+
+      list.appendChild(card);
+    });
+  }
+
   function formatCertDate(d) {
     return d.toLocaleDateString('en-IE', { day: 'numeric', month: 'long', year: 'numeric' });
   }
@@ -248,7 +285,6 @@
   function initCertCheck() {
     var form = document.getElementById('cert-form');
     var result = document.getElementById('cert-result');
-    var certViz = document.querySelector('.certificate');
     if (!form || !result) return;
 
     form.addEventListener('submit', function (e) {
@@ -310,14 +346,54 @@
           '<div><dt>Validity period</dt><dd>' + record.years + ' year' + (record.years === 1 ? '' : 's') + ' from issue</dd></div>' +
         '</dl>';
 
-      if (certViz) {
-        certViz.querySelector('.certificate__name').textContent = record.name;
-        certViz.querySelector('.certificate__course').textContent = record.level + ' programme';
-        certViz.querySelector('.certificate__number').textContent = 'Certificate No. ' + record.id + ' — verify it below';
-        certViz.querySelector('.certificate__sig-line:first-of-type').textContent = 'Nia Fairweather';
-        var dateEl = certViz.querySelectorAll('.certificate__sig-line')[1];
-        if (dateEl) dateEl.textContent = formatCertDate(issued);
-      }
+      updateCertificateDisplay(record);
+    });
+  }
+
+  function initAddCertificate() {
+    var addBtn = document.getElementById('add-cert-btn');
+    var modal = document.getElementById('add-cert-modal');
+    var closeBtn = document.getElementById('close-modal');
+    var cancelBtn = document.getElementById('cancel-cert');
+    var addForm = document.getElementById('add-cert-form');
+
+    if (!addBtn || !modal || !addForm) return;
+
+    addBtn.addEventListener('click', function () { modal.hidden = false; });
+    closeBtn.addEventListener('click', function () { modal.hidden = true; });
+    cancelBtn.addEventListener('click', function () { modal.hidden = true; });
+
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) modal.hidden = true;
+    });
+
+    addForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var valid = true;
+      addForm.querySelectorAll('[required]').forEach(function (input) {
+        var msg = input.parentElement.querySelector('.error');
+        var ok = String(input.value).trim() !== '';
+        if (msg) msg.textContent = ok ? '' : (input.dataset.error || 'This field is required.');
+        input.setAttribute('aria-invalid', String(!ok));
+        if (!ok && valid) input.focus();
+        valid = valid && ok;
+      });
+      if (!valid) return;
+
+      var newCert = {
+        id: addForm.querySelector('#new-cert-number').value.trim().toUpperCase(),
+        name: addForm.querySelector('#new-cert-name').value.trim(),
+        level: addForm.querySelector('#new-cert-level').value,
+        issued: addForm.querySelector('#new-cert-date').value,
+        years: addForm.querySelector('#new-cert-level').value === 'Foundation' ? 2 :
+               addForm.querySelector('#new-cert-level').value === 'Artist Diploma' ? 3 : 5
+      };
+
+      CERTIFICATES.push(newCert);
+      renderCertificateGallery();
+      updateCertificateDisplay(newCert);
+      modal.hidden = true;
+      addForm.reset();
     });
   }
 
@@ -335,7 +411,9 @@
     initCounters();
     initGallery();
     initForm();
+    renderCertificateGallery();
     initCertCheck();
+    initAddCertificate();
     initYear();
     if (window.NailArt) window.NailArt.mount(document);
     initReveal();

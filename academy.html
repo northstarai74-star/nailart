@@ -222,9 +222,16 @@
     <div class="section-head center" style="margin-inline:auto;text-align:center">
       <span class="eyebrow eyebrow--plain" data-reveal style="justify-self:center">Certification</span>
       <h2 class="h2" data-reveal data-reveal-delay="60">What you'll walk away with.</h2>
-      <p class="lede muted" data-reveal data-reveal-delay="120">Every graduate receives a numbered, insurer-recognised certificate — here's a sample from a recent Master &amp; Business graduate.</p>
+      <p class="lede muted" data-reveal data-reveal-delay="120">Every graduate receives a numbered, insurer-recognised certificate — click any certificate below to view it in detail.</p>
     </div>
 
+    <!-- Certificate Gallery -->
+    <div class="cert-gallery" style="margin:clamp(2rem,5vw,4rem) 0" data-reveal data-reveal-delay="100">
+      <div id="cert-list" class="cert-gallery__grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-bottom:2rem"></div>
+      <button class="btn btn--ghost" id="add-cert-btn" style="width:100%">+ Add certificate entry</button>
+    </div>
+
+    <!-- Certificate Display -->
     <div class="certificate" data-reveal data-reveal-delay="100">
       <div class="certificate__inner">
         <span class="certificate__corner certificate__corner--tl" aria-hidden="true"></span>
@@ -269,12 +276,52 @@
       </div>
     </div>
 
+    <!-- Add Certificate Modal -->
+    <div id="add-cert-modal" hidden class="modal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:1000">
+      <div class="card" style="max-width:500px;width:90%;max-height:90vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+          <h3 class="h3">Add new certificate</h3>
+          <button id="close-modal" type="button" aria-label="Close" style="background:none;border:none;font-size:1.5rem;cursor:pointer">&times;</button>
+        </div>
+        <form id="add-cert-form" class="form" novalidate>
+          <div class="field">
+            <label for="new-cert-name">Student name</label>
+            <input type="text" id="new-cert-name" name="name" required placeholder="Jane Smith" data-error="Enter the student name.">
+            <span class="error" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="new-cert-number">Certificate number</label>
+            <input type="text" id="new-cert-number" name="id" required placeholder="LCA-2025-0001" data-error="Enter the certificate number.">
+            <span class="error" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="new-cert-level">Level</label>
+            <select id="new-cert-level" name="level" required data-error="Select a level.">
+              <option value="">Select a level</option>
+              <option value="Foundation">Foundation</option>
+              <option value="Artist Diploma">Artist Diploma</option>
+              <option value="Master &amp; Business">Master &amp; Business</option>
+            </select>
+            <span class="error" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="new-cert-date">Date issued</label>
+            <input type="date" id="new-cert-date" name="issued" required data-error="Enter the issue date.">
+            <span class="error" aria-live="polite"></span>
+          </div>
+          <div style="display:flex;gap:1rem;margin-top:1.5rem">
+            <button class="btn" type="submit">Add certificate</button>
+            <button class="btn btn--ghost" id="cancel-cert" type="button">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <div class="split" style="margin-top:clamp(2.5rem,5vw,4rem)">
       <div class="stack" style="--stack:1.25rem" data-reveal>
         <span class="eyebrow">Check validity</span>
-        <h3 class="h3">Already have a certificate number?</h3>
+        <h3 class="h3">Verify a certificate</h3>
         <p class="lede muted">Two years for Foundation, three for the Artist Diploma, five for Master &amp; Business. Employers and clients can confirm a certificate is current here.</p>
-        <p class="muted" style="font-size:var(--step--1)">Try the sample above: <strong>LCA-2024-0207</strong> / <strong>Okafor</strong>.</p>
       </div>
 
       <div class="card" data-reveal data-reveal-delay="80">
