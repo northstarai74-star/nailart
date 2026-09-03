@@ -241,18 +241,6 @@
     { id: 'LCA-2025-0338', name: 'Elena Fitzgerald', level: 'Foundation',        issued: '2025-09-01', years: 2 }
   ];
 
-  function updateCertificateDisplay(record) {
-    var certViz = document.querySelector('.certificate');
-    if (!certViz || !record) return;
-
-    var issued = new Date(record.issued + 'T00:00:00');
-    certViz.querySelector('.certificate__name').textContent = record.name;
-    certViz.querySelector('.certificate__course').textContent = record.level + ' programme';
-    certViz.querySelector('.certificate__number').textContent = 'Certificate No. ' + record.id + ' — verify it below';
-    certViz.querySelector('.certificate__sig-line:first-of-type').textContent = 'Nia Fairweather';
-    var dateEl = certViz.querySelectorAll('.certificate__sig-line')[1];
-    if (dateEl) dateEl.textContent = formatCertDate(issued);
-  }
 
   function renderCertificateGallery() {
     var list = document.getElementById('cert-list');
@@ -280,8 +268,6 @@
     list.addEventListener('click', function (e) {
       var card = e.target.closest('.cert-card');
       if (!card) return;
-      var index = parseInt(card.dataset.certIndex, 10);
-      if (CERTIFICATES[index]) updateCertificateDisplay(CERTIFICATES[index]);
     });
   }
 
@@ -352,8 +338,6 @@
           '<div><dt>Issued</dt><dd>' + formatCertDate(issued) + '</dd></div>' +
           '<div><dt>Validity period</dt><dd>' + record.years + ' year' + (record.years === 1 ? '' : 's') + ' from issue</dd></div>' +
         '</dl>';
-
-      updateCertificateDisplay(record);
     });
   }
 
@@ -398,7 +382,6 @@
 
       CERTIFICATES.push(newCert);
       renderCertificateGallery();
-      updateCertificateDisplay(newCert);
       modal.hidden = true;
       addForm.reset();
     });
@@ -419,7 +402,6 @@
     initGallery();
     initForm();
     renderCertificateGallery();
-    if (CERTIFICATES.length > 0) updateCertificateDisplay(CERTIFICATES[0]);
     initCertCheck();
     initAddCertificate();
     initYear();
