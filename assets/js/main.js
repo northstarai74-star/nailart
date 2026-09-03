@@ -259,14 +259,14 @@
     if (!list) return;
 
     list.innerHTML = '';
-    CERTIFICATES.forEach(function (cert) {
+    CERTIFICATES.forEach(function (cert, index) {
       var card = document.createElement('button');
       card.className = 'cert-card';
       card.type = 'button';
+      card.dataset.certIndex = index;
       card.style.cssText = 'background:transparent;border:2px solid #E5DDD8;border-radius:0.5rem;padding:1.5rem;text-align:left;cursor:pointer;transition:all 0.2s;font-family:inherit;font-size:1rem';
       card.onmouseover = function () { this.style.borderColor = '#B8465C'; this.style.boxShadow = '0 4px 12px rgba(184,70,92,0.1)'; };
       card.onmouseout = function () { this.style.borderColor = '#E5DDD8'; this.style.boxShadow = 'none'; };
-      card.onclick = function () { updateCertificateDisplay(cert); };
 
       card.innerHTML =
         '<div style="font-size:0.875rem;color:#8E7A74;margin-bottom:0.5rem">Certificate</div>' +
@@ -275,6 +275,13 @@
         '<div style="font-size:0.875rem;color:#B8465C;margin-top:0.75rem">' + cert.level + '</div>';
 
       list.appendChild(card);
+    });
+
+    list.addEventListener('click', function (e) {
+      var card = e.target.closest('.cert-card');
+      if (!card) return;
+      var index = parseInt(card.dataset.certIndex, 10);
+      if (CERTIFICATES[index]) updateCertificateDisplay(CERTIFICATES[index]);
     });
   }
 
@@ -412,6 +419,7 @@
     initGallery();
     initForm();
     renderCertificateGallery();
+    if (CERTIFICATES.length > 0) updateCertificateDisplay(CERTIFICATES[0]);
     initCertCheck();
     initAddCertificate();
     initYear();
