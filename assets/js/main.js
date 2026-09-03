@@ -235,10 +235,10 @@
 
   /* ---------------- certificate check ---------------- */
   var CERTIFICATES = [
-    { id: 'LCA-2021-0142', surname: 'Meadow',     level: 'Artist Diploma',    issued: '2021-05-14', years: 3 },
-    { id: 'LCA-2023-0091', surname: 'Byrne',      level: 'Artist Diploma',    issued: '2023-11-02', years: 3 },
-    { id: 'LCA-2024-0207', surname: 'Okafor',     level: 'Master &amp; Business', issued: '2024-03-20', years: 5 },
-    { id: 'LCA-2025-0338', surname: 'Fitzgerald', level: 'Foundation',        issued: '2025-09-01', years: 2 }
+    { id: 'LCA-2021-0142', name: 'Sarah Meadow',     level: 'Artist Diploma',    issued: '2021-05-14', years: 3 },
+    { id: 'LCA-2023-0091', name: 'Jasmine Byrne',      level: 'Artist Diploma',    issued: '2023-11-02', years: 3 },
+    { id: 'LCA-2024-0207', name: 'Amara Okafor',     level: 'Master &amp; Business', issued: '2024-03-20', years: 5 },
+    { id: 'LCA-2025-0338', name: 'Elena Fitzgerald', level: 'Foundation',        issued: '2025-09-01', years: 2 }
   ];
 
   function formatCertDate(d) {
@@ -248,6 +248,7 @@
   function initCertCheck() {
     var form = document.getElementById('cert-form');
     var result = document.getElementById('cert-result');
+    var certViz = document.querySelector('.certificate');
     if (!form || !result) return;
 
     form.addEventListener('submit', function (e) {
@@ -266,7 +267,8 @@
       var number = form.querySelector('#cert-number').value.trim().toUpperCase();
       var surname = form.querySelector('#cert-surname').value.trim().toLowerCase();
       var record = CERTIFICATES.filter(function (c) {
-        return c.id === number && c.surname.toLowerCase() === surname;
+        var certSurname = c.name.split(' ').pop().toLowerCase();
+        return c.id === number && certSurname === surname;
       })[0];
 
       result.hidden = false;
@@ -307,6 +309,15 @@
           '<div><dt>Issued</dt><dd>' + formatCertDate(issued) + '</dd></div>' +
           '<div><dt>Validity period</dt><dd>' + record.years + ' year' + (record.years === 1 ? '' : 's') + ' from issue</dd></div>' +
         '</dl>';
+
+      if (certViz) {
+        certViz.querySelector('.certificate__name').textContent = record.name;
+        certViz.querySelector('.certificate__course').textContent = record.level + ' programme';
+        certViz.querySelector('.certificate__number').textContent = 'Certificate No. ' + record.id + ' — verify it below';
+        certViz.querySelector('.certificate__sig-line:first-of-type').textContent = 'Nia Fairweather';
+        var dateEl = certViz.querySelectorAll('.certificate__sig-line')[1];
+        if (dateEl) dateEl.textContent = formatCertDate(issued);
+      }
     });
   }
 
