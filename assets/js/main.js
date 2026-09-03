@@ -287,16 +287,16 @@
       if (daysLeft < 0) {
         pillClass = 'cert-pill--expired';
         pillLabel = 'Expired';
-        statusMsg = 'This certificate expired on ' + formatCertDate(expires) + '. A refresher module is required before it can be renewed.';
+        statusMsg = 'This certificate has expired. A refresher module is required before it can be renewed.';
       } else if (daysLeft <= 90) {
         pillClass = 'cert-pill--soon';
         pillLabel = 'Expiring soon';
         statusMsg = 'This certificate is valid but expires in ' + daysLeft + ' day' + (daysLeft === 1 ? '' : 's') +
-          ', on ' + formatCertDate(expires) + '. Renewal is recommended now.';
+          '. Renewal is recommended now.';
       } else {
         pillClass = 'cert-pill--valid';
         pillLabel = 'Valid';
-        statusMsg = 'This certificate is valid until ' + formatCertDate(expires) + '.';
+        statusMsg = 'This certificate is valid and in good standing.';
       }
 
       result.innerHTML =
@@ -306,7 +306,6 @@
           '<div><dt>Level</dt><dd>' + record.level + '</dd></div>' +
           '<div><dt>Issued</dt><dd>' + formatCertDate(issued) + '</dd></div>' +
           '<div><dt>Validity period</dt><dd>' + record.years + ' year' + (record.years === 1 ? '' : 's') + ' from issue</dd></div>' +
-          '<div><dt>Expires</dt><dd>' + formatCertDate(expires) + '</dd></div>' +
         '</dl>';
     });
   }
