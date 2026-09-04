@@ -279,6 +279,16 @@
       }
 
       var issued = new Date(record.issued + 'T00:00:00');
+
+      // Update the certificate showcase with the verified certificate data
+      var nameEl = document.getElementById('cert-display-name');
+      var courseEl = document.getElementById('cert-display-course');
+      var dateEl = document.getElementById('cert-display-date');
+      var numberEl = document.getElementById('cert-display-number');
+      if (nameEl) nameEl.textContent = record.surname;
+      if (courseEl) courseEl.textContent = record.level + ' programme';
+      if (dateEl) dateEl.textContent = formatCertDate(issued);
+      if (numberEl) numberEl.textContent = 'Certificate No. ' + record.id + ' — verify it below';
       var expires = new Date(issued);
       expires.setFullYear(expires.getFullYear() + record.years);
       var daysLeft = Math.round((expires - new Date()) / 86400000);
