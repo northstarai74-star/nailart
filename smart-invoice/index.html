@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Invoice & Follow Up App</title>
+<meta name="description" content="Create invoices in seconds and let automatic follow-ups get you paid faster.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="#top"><span class="logo-mark">◆</span> Smart Invoice</a>
+    <nav id="menu">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-sm" href="#cta">Start free</a>
+    <button class="burger" aria-label="Menu" onclick="document.getElementById('menu').classList.toggle('open')">☰</button>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero wrap">
+  <div class="hero-text">
+    <span class="pill">Smart Invoice &amp; Follow Up App</span>
+    <h1>Get paid on time, <em>without chasing.</em></h1>
+    <p>Create professional invoices in under a minute. Smart reminders follow up with your clients automatically, so you never send an awkward “just checking in” email again.</p>
+    <div class="hero-cta">
+      <a class="btn" href="#cta">Start free trial</a>
+      <a class="btn btn-ghost" href="#how">See how it works</a>
+    </div>
+    <ul class="trust"><li>No credit card</li><li>Setup in 2 minutes</li><li>Cancel anytime</li></ul>
+  </div>
+  <div class="mock" aria-hidden="true">
+    <div class="mock-head"><b>Invoice #1042</b><span class="tag due">Due in 3 days</span></div>
+    <div class="mock-row"><span>Website redesign</span><span>$1,800</span></div>
+    <div class="mock-row"><span>Brand guide</span><span>$650</span></div>
+    <div class="mock-row total"><span>Total</span><span>$2,450</span></div>
+    <div class="mock-follow"><span class="dot"></span> Reminder scheduled · Tomorrow 9:00 AM</div>
+    <div class="mock-follow paid"><span class="dot"></span> Invoice #1038 paid · $980</div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="wrap stats-in">
+    <div><b data-n="38">0</b><span>% faster payments</span></div>
+    <div><b data-n="12000">0</b><span>+ invoices sent</span></div>
+    <div><b data-n="60">0</b><span>sec to create one</span></div>
+    <div><b data-n="98">0</b><span>% happy users</span></div>
+  </div>
+</section>
+
+<section id="features" class="wrap section">
+  <h2>Everything you need to get paid</h2>
+  <p class="sub">Invoicing and follow-up in one simple app.</p>
+  <div class="grid">
+    <article class="card"><span class="ico">⚡</span><h3>Instant invoices</h3><p>Pick a template, add line items, send. Taxes, discounts and currencies handled for you.</p></article>
+    <article class="card"><span class="ico">🔔</span><h3>Smart follow-ups</h3><p>Friendly reminders go out before, on, and after the due date, and stop the moment you're paid.</p></article>
+    <article class="card"><span class="ico">💳</span><h3>Pay online</h3><p>Clients pay by card or bank transfer straight from the invoice link.</p></article>
+    <article class="card"><span class="ico">📊</span><h3>Live dashboard</h3><p>See what's paid, pending and overdue at a glance, plus cash-flow forecasts.</p></article>
+    <article class="card"><span class="ico">🔁</span><h3>Recurring billing</h3><p>Automate retainers and subscriptions. Set it once and forget it.</p></article>
+    <article class="card"><span class="ico">🔒</span><h3>Secure &amp; private</h3><p>Encrypted data, automatic backups, and exports whenever you need them.</p></article>
+  </div>
+</section>
+
+<section id="how" class="alt section">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <p class="sub">Three steps from work done to money in the bank.</p>
+    <ol class="steps">
+      <li><b>1</b><h3>Create</h3><p>Build an invoice from a template in under a minute.</p></li>
+      <li><b>2</b><h3>Send</h3><p>Email it or share a link. Clients can pay instantly.</p></li>
+      <li><b>3</b><h3>Follow up</h3><p>Smart reminders chase late payments so you don't have to.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="wrap section">
+  <h2>Try the invoice calculator</h2>
+  <p class="sub">A quick feel for the app. Add items and see your total.</p>
+  <div class="calc">
+    <div id="items"></div>
+    <button class="btn btn-ghost btn-sm" id="add">+ Add item</button>
+    <div class="calc-foot">
+      <label>Tax % <input id="tax" type="number" value="10" min="0" max="100"></label>
+      <div class="calc-total">Total: <b id="total">$0.00</b></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="alt section">
+  <div class="wrap">
+    <h2>Simple pricing</h2>
+    <p class="sub">Start free. Upgrade when you grow.</p>
+    <div class="grid prices">
+      <article class="card"><h3>Free</h3><p class="price">$0</p><ul><li>5 invoices / month</li><li>Basic reminders</li><li>PDF export</li></ul><a class="btn btn-ghost" href="#cta">Get started</a></article>
+      <article class="card featured"><span class="pill">Most popular</span><h3>Pro</h3><p class="price">$12<small>/mo</small></p><ul><li>Unlimited invoices</li><li>Smart follow-up automation</li><li>Online payments</li><li>Recurring billing</li></ul><a class="btn" href="#cta">Start free trial</a></article>
+      <article class="card"><h3>Team</h3><p class="price">$29<small>/mo</small></p><ul><li>Everything in Pro</li><li>5 team members</li><li>Advanced reports</li><li>Priority support</li></ul><a class="btn btn-ghost" href="#cta">Contact us</a></article>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section">
+  <h2>Loved by freelancers &amp; small teams</h2>
+  <div class="grid">
+    <blockquote class="card">“I used to dread chasing payments. Now it just happens. My average payment time dropped from 24 to 9 days.”<cite>Maya R., designer</cite></blockquote>
+    <blockquote class="card">“Setup took two minutes and the reminders sound polite and human. Clients actually thank me.”<cite>Daniel K., consultant</cite></blockquote>
+    <blockquote class="card">“The dashboard finally shows me what's outstanding. A must for any agency.”<cite>Priya S., agency owner</cite></blockquote>
+  </div>
+</section>
+
+<section id="faq" class="alt section">
+  <div class="wrap narrow">
+    <h2>FAQ</h2>
+    <details><summary>How do automatic follow-ups work?</summary><p>You choose a schedule, such as 3 days before, on the due date, and 3 and 7 days after. We send polite emails and stop once the invoice is paid.</p></details>
+    <details><summary>Can my clients pay online?</summary><p>Yes. Every invoice has a secure payment link that supports cards and bank transfers.</p></details>
+    <details><summary>Is there a free plan?</summary><p>Yes, the Free plan includes 5 invoices per month with no credit card required.</p></details>
+    <details><summary>Can I cancel anytime?</summary><p>Absolutely. No contracts, and you can export all your data.</p></details>
+  </div>
+</section>
+
+<section id="cta" class="wrap section cta">
+  <h2>Ready to get paid faster?</h2>
+  <p class="sub">Join thousands of freelancers and small businesses.</p>
+  <form id="signup" class="signup">
+    <input type="email" id="email" placeholder="you@example.com" required>
+    <button class="btn" type="submit">Start free trial</button>
+  </form>
+  <p id="msg" class="msg" role="status"></p>
+</section>
+</main>
+
+<footer class="foot"><div class="wrap">© <span id="yr"></span> Smart Invoice &amp; Follow Up App. All rights reserved.</div></footer>
+<script src="app.js"></script>
+</body>
+</html>
