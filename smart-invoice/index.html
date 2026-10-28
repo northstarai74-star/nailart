@@ -3,137 +3,401 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Smart Invoice & Follow Up App</title>
-<meta name="description" content="Create invoices in seconds and let automatic follow-ups get you paid faster.">
-<link rel="stylesheet" href="style.css">
+<title>Smart Invoice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Layout: ledger-paper landing page. Wide hero with a live invoice sheet, then a working builder, plans, FAQ. */
+:root{
+  --bg:#f3f6f4; --surface:#ffffff; --ink:#0f1f1b; --mute:#52625d; --line:#d8e1dc;
+  --accent:#0b7a63; --accent-ink:#ffffff; --accent-soft:#dff2ec;
+  --warn:#b45309; --warn-soft:#fdeccd; --ok:#0b7a63;
+  --dark:#0f1f1b; --dark-ink:#e9f3ef;
+  --f-display:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;
+  --f-body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b1613; --surface:#12221e; --ink:#e9f3ef; --mute:#9db1aa; --line:#24372f;
+  --accent:#3fcfa8; --accent-ink:#06231b; --accent-soft:#173a30;
+  --warn:#f5b04a; --warn-soft:#3a2b10; --ok:#3fcfa8;
+  --dark:#050d0b; --dark-ink:#e9f3ef; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b1613; --surface:#12221e; --ink:#e9f3ef; --mute:#9db1aa; --line:#24372f;
+  --accent:#3fcfa8; --accent-ink:#06231b; --accent-soft:#173a30;
+  --warn:#f5b04a; --warn-soft:#3a2b10; --ok:#3fcfa8;
+  --dark:#050d0b; --dark-ink:#e9f3ef; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.02em;line-height:1.05}
+h1{font-size:clamp(2.6rem,6.4vw,4.8rem);font-weight:800}
+h2{font-size:clamp(1.9rem,4vw,2.9rem);font-weight:700}
+h3{font-size:1.2rem;font-weight:700;letter-spacing:-.01em}
+p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font:500 .75rem var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+
+/* nav */
+.nav{display:flex;align-items:center;gap:24px;padding-block:20px}
+.logo{font:800 1.25rem var(--f-display);text-decoration:none;display:flex;align-items:center;gap:10px;letter-spacing:-.02em}
+.logo i{width:28px;height:28px;border-radius:8px;background:var(--accent);display:grid;place-items:center}
+.logo i:after{content:"";width:11px;height:6px;border-left:2.5px solid var(--accent-ink);border-bottom:2.5px solid var(--accent-ink);transform:rotate(-45deg) translate(1px,-1px)}
+.nav nav{margin-left:auto;display:flex;gap:26px}
+.nav nav a{text-decoration:none;color:var(--mute);font-size:.95rem;font-weight:500}
+.nav nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:13px 26px;font:600 1rem var(--f-body);text-decoration:none;cursor:pointer;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.line{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.line:hover{box-shadow:inset 0 0 0 1.5px var(--accent)}
+.btn.sm{padding:9px 20px;font-size:.9rem}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding-block:56px 88px}
+.hero .lead{font-size:1.2rem;color:var(--mute);max-width:30em;margin-top:22px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.facts{display:flex;gap:10px 26px;flex-wrap:wrap;margin:30px 0 0;padding:0;list-style:none;color:var(--mute);font-size:.9rem}
+.facts li:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:9px}
+
+/* invoice sheet */
+.sheet{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px;box-shadow:0 30px 60px -30px rgba(15,31,27,.35);min-width:0}
+.sheet-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1.5px dashed var(--line)}
+.sheet-top b{font:700 1.5rem var(--f-display)}
+.meta{font:400 .78rem var(--f-mono);color:var(--mute);line-height:1.7}
+.badge{display:inline-block;font:500 .72rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--warn-soft);color:var(--warn)}
+.badge.paid{background:var(--accent-soft);color:var(--ok)}
+.rows{display:grid;margin:8px 0}
+.row{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.row span:last-child{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.row.total{border:0;padding-top:16px;font:800 1.5rem var(--f-display)}
+.row.total span:last-child{font:500 1.4rem var(--f-mono)}
+.timeline{margin:18px 0 0;padding:0;list-style:none;display:grid;gap:0}
+.timeline li{display:grid;grid-template-columns:18px 1fr auto;gap:12px;align-items:center;padding:9px 0;font-size:.88rem;position:relative}
+.timeline li:before{content:"";width:11px;height:11px;border-radius:50%;border:2px solid var(--line);background:var(--surface);justify-self:center;position:relative;z-index:1}
+.timeline li:after{content:"";position:absolute;left:8px;top:calc(50% + 6px);bottom:calc(-50% + 6px);width:2px;background:var(--line)}
+.timeline li:last-child:after{display:none}
+.timeline li.on:before{background:var(--accent);border-color:var(--accent)}
+.timeline li.off{opacity:.45}
+.timeline .when{font:400 .75rem var(--f-mono);color:var(--mute)}
+
+/* stats band */
+.band{background:var(--dark);color:var(--dark-ink);margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;padding-block:44px}
+.stats b{display:block;font:800 clamp(2rem,4vw,3rem) var(--f-display);letter-spacing:-.03em}
+.stats span{color:#9db1aa;font-size:.9rem}
+
+section.pad{padding-block:96px}
+.head{display:grid;gap:14px;max-width:34em;margin-bottom:48px}
+.head p{color:var(--mute);font-size:1.1rem}
+
+/* features */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1.5px solid var(--ink)}
+.feat{padding:28px 28px 32px 0;border-bottom:1px solid var(--line);display:grid;gap:10px;align-content:start;min-width:0}
+.feat:not(:nth-child(3n+1)){padding-left:28px;border-left:1px solid var(--line)}
+.feat p{color:var(--mute);font-size:.97rem}
+.feat .tag{font:500 .72rem var(--f-mono);letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+
+/* builder */
+.builder{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px;min-width:0}
+.panel h3{margin-bottom:18px}
+label.f{display:grid;gap:6px;font:500 .78rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+input,select{font:400 1rem var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0;width:100%}
+input:focus-visible,select:focus-visible{outline-offset:1px}
+.item{display:grid;grid-template-columns:1fr 64px 96px 34px;gap:8px;margin-bottom:8px}
+.x{background:none;border:0;color:var(--mute);cursor:pointer;font-size:1.2rem;border-radius:8px}
+.x:hover{color:var(--warn)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.sched-label{margin:24px 0 10px;font:500 .78rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:transparent;color:var(--ink);border-radius:999px;padding:8px 16px;font:500 .88rem var(--f-body);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.note{margin-top:14px;font-size:.85rem;color:var(--mute)}
+
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:30px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.plan.pro{background:var(--dark);color:var(--dark-ink);border-color:var(--dark)}
+.plan.pro .btn{background:var(--accent);color:var(--accent-ink)}
+.plan.pro li{color:#c3d4ce}
+.price{font:800 3rem var(--f-display);letter-spacing:-.03em}
+.price small{font:400 1rem var(--f-body);color:var(--mute);letter-spacing:0}
+.plan ul{list-style:none;margin:0;padding:0;display:grid;gap:9px;flex:1;color:var(--mute);font-size:.95rem}
+.plan li:before{content:"+";font-family:var(--f-mono);color:var(--accent);margin-right:10px}
+.toggle{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;margin-bottom:28px}
+.toggle button{border:0;background:transparent;color:var(--mute);padding:8px 18px;border-radius:999px;font:500 .9rem var(--f-body);cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* quotes */
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+blockquote{margin:0;display:grid;gap:16px;align-content:start}
+blockquote p{font:500 1.2rem/1.4 var(--f-display);letter-spacing:-.01em}
+cite{font-style:normal;color:var(--mute);font-size:.9rem}
+cite b{color:var(--ink);font-weight:600}
+
+/* faq */
+.faq{max-width:760px;border-top:1.5px solid var(--ink)}
+details{border-bottom:1px solid var(--line);padding:20px 0}
+summary{cursor:pointer;font:700 1.15rem var(--f-display);list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";font-family:var(--f-mono);color:var(--accent)}
+details[open] summary:after{content:"\2212"}
+details p{color:var(--mute);margin-top:12px;max-width:60ch}
+
+/* cta */
+.cta{background:var(--accent);color:var(--accent-ink);border-radius:22px;padding:clamp(32px,6vw,72px);display:grid;gap:22px;margin-bottom:64px}
+.cta p{max-width:34em;opacity:.9;font-size:1.1rem}
+.cta h2{max-width:14em}
+.signup{display:flex;gap:10px;flex-wrap:wrap;max-width:520px}
+.signup input{flex:1;min-width:220px;background:var(--surface);color:var(--ink);border:0;border-radius:999px;padding:14px 20px}
+.signup .btn{background:var(--dark);color:var(--dark-ink)}
+.msg{min-height:1.5em;font-weight:500}
+
+footer{border-top:1px solid var(--line);padding-block:30px 40px;color:var(--mute);font-size:.9rem;display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+
+@media (max-width:900px){
+  .hero,.builder{grid-template-columns:1fr}
+  .hero{gap:40px;padding-block:32px 64px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .features,.plans,.quotes{grid-template-columns:1fr}
+  .feat,.feat:not(:nth-child(3n+1)){padding:24px 0;border-left:0}
+  .quotes{gap:32px}
+  .nav nav{display:none}
+  .nav .btn{margin-left:auto}
+  section.pad{padding-block:64px}
+}
+@media (max-width:480px){.item{grid-template-columns:1fr 54px 80px 30px}.two{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
 </head>
 <body>
-<header class="nav">
-  <div class="wrap nav-in">
-    <a class="logo" href="#top"><span class="logo-mark">◆</span> Smart Invoice</a>
-    <nav id="menu">
-      <a href="#features">Features</a>
-      <a href="#how">How it works</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#faq">FAQ</a>
+<div class="wrap">
+  <header class="nav">
+    <a class="logo" href="#top"><i></i>Smart Invoice</a>
+    <nav>
+      <a href="#features">Features</a><a href="#try">Try it</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
     </nav>
-    <a class="btn btn-sm" href="#cta">Start free</a>
-    <button class="burger" aria-label="Menu" onclick="document.getElementById('menu').classList.toggle('open')">☰</button>
-  </div>
-</header>
+    <a class="btn sm" href="#join">Start free</a>
+  </header>
 
-<main id="top">
-<section class="hero wrap">
-  <div class="hero-text">
-    <span class="pill">Smart Invoice &amp; Follow Up App</span>
-    <h1>Get paid on time, <em>without chasing.</em></h1>
-    <p>Create professional invoices in under a minute. Smart reminders follow up with your clients automatically, so you never send an awkward “just checking in” email again.</p>
-    <div class="hero-cta">
-      <a class="btn" href="#cta">Start free trial</a>
-      <a class="btn btn-ghost" href="#how">See how it works</a>
+  <main id="top">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Invoice and follow up app</p>
+        <h1 style="margin-top:16px">Send the invoice. <em>We'll do the chasing.</em></h1>
+        <p class="lead">Smart Invoice builds a clean invoice in under a minute, then sends polite reminders before and after the due date. They stop the moment your client pays.</p>
+        <div class="actions">
+          <a class="btn" href="#join">Start free trial</a>
+          <a class="btn line" href="#try">Build an invoice</a>
+        </div>
+        <ul class="facts"><li>No credit card</li><li>Free for 5 invoices a month</li><li>Cancel anytime</li></ul>
+      </div>
+
+      <aside class="sheet" aria-label="Sample invoice">
+        <div class="sheet-top">
+          <div><b>Invoice</b><div class="meta">INV-1042 · Issued 02 Nov</div></div>
+          <div style="text-align:right"><span class="badge">Due in 3 days</span><div class="meta" style="margin-top:8px">Billed to Harbor &amp; Pine Studio</div></div>
+        </div>
+        <div class="rows">
+          <div class="row"><span>Website redesign, 3 pages</span><span>$1,800.00</span></div>
+          <div class="row"><span>Brand guide</span><span>$650.00</span></div>
+          <div class="row"><span>Sales tax (8%)</span><span>$196.00</span></div>
+          <div class="row total"><span>Total due</span><span>$2,646.00</span></div>
+        </div>
+        <ul class="timeline" aria-label="Reminder schedule">
+          <li class="on"><span></span><span>Invoice sent</span><span class="when">02 Nov</span></li>
+          <li class="on"><span></span><span>Reminder: due in 3 days</span><span class="when">02 Nov</span></li>
+          <li><span></span><span>Reminder: due today</span><span class="when">05 Nov, 9:00</span></li>
+          <li><span></span><span>Follow up: 3 days late</span><span class="when">08 Nov, 9:00</span></li>
+        </ul>
+      </aside>
+    </section>
+  </main>
+</div>
+
+<div class="band">
+  <div class="wrap stats">
+    <div><b class="count" data-n="38" data-s="%">38%</b><span>faster average payment</span></div>
+    <div><b class="count" data-n="12400" data-s="+">12,400+</b><span>invoices sent each month</span></div>
+    <div><b class="count" data-n="45" data-s=" sec">45 sec</b><span>to build an invoice</span></div>
+    <div><b class="count" data-n="9" data-s=" days">9 days</b><span>median time to get paid</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="pad" id="features">
+    <div class="head"><p class="eyebrow">What it does</p><h2>Everything between "done" and "paid"</h2><p>One place to bill, nudge, and track, so nothing slips past its due date.</p></div>
+    <div class="features">
+      <article class="feat"><span class="tag">Create</span><h3>Invoices in seconds</h3><p>Reusable templates, saved clients, tax and discount rules, and 30 currencies.</p></article>
+      <article class="feat"><span class="tag">Follow up</span><h3>Reminders that sound human</h3><p>Pick a schedule once. Messages go out before, on, and after the due date, then stop on payment.</p></article>
+      <article class="feat"><span class="tag">Collect</span><h3>Pay from the link</h3><p>Clients pay by card or bank transfer from the invoice page. You get a receipt automatically.</p></article>
+      <article class="feat"><span class="tag">Track</span><h3>See what's overdue</h3><p>A single list shows paid, pending, and late, with the total outstanding at the top.</p></article>
+      <article class="feat"><span class="tag">Repeat</span><h3>Recurring billing</h3><p>Retainers and subscriptions bill themselves on the day you choose.</p></article>
+      <article class="feat"><span class="tag">Keep</span><h3>Exports for your accountant</h3><p>Download CSV and PDF records by month or by client whenever you need them.</p></article>
     </div>
-    <ul class="trust"><li>No credit card</li><li>Setup in 2 minutes</li><li>Cancel anytime</li></ul>
-  </div>
-  <div class="mock" aria-hidden="true">
-    <div class="mock-head"><b>Invoice #1042</b><span class="tag due">Due in 3 days</span></div>
-    <div class="mock-row"><span>Website redesign</span><span>$1,800</span></div>
-    <div class="mock-row"><span>Brand guide</span><span>$650</span></div>
-    <div class="mock-row total"><span>Total</span><span>$2,450</span></div>
-    <div class="mock-follow"><span class="dot"></span> Reminder scheduled · Tomorrow 9:00 AM</div>
-    <div class="mock-follow paid"><span class="dot"></span> Invoice #1038 paid · $980</div>
-  </div>
-</section>
+  </section>
 
-<section class="stats">
-  <div class="wrap stats-in">
-    <div><b data-n="38">0</b><span>% faster payments</span></div>
-    <div><b data-n="12000">0</b><span>+ invoices sent</span></div>
-    <div><b data-n="60">0</b><span>sec to create one</span></div>
-    <div><b data-n="98">0</b><span>% happy users</span></div>
-  </div>
-</section>
-
-<section id="features" class="wrap section">
-  <h2>Everything you need to get paid</h2>
-  <p class="sub">Invoicing and follow-up in one simple app.</p>
-  <div class="grid">
-    <article class="card"><span class="ico">⚡</span><h3>Instant invoices</h3><p>Pick a template, add line items, send. Taxes, discounts and currencies handled for you.</p></article>
-    <article class="card"><span class="ico">🔔</span><h3>Smart follow-ups</h3><p>Friendly reminders go out before, on, and after the due date, and stop the moment you're paid.</p></article>
-    <article class="card"><span class="ico">💳</span><h3>Pay online</h3><p>Clients pay by card or bank transfer straight from the invoice link.</p></article>
-    <article class="card"><span class="ico">📊</span><h3>Live dashboard</h3><p>See what's paid, pending and overdue at a glance, plus cash-flow forecasts.</p></article>
-    <article class="card"><span class="ico">🔁</span><h3>Recurring billing</h3><p>Automate retainers and subscriptions. Set it once and forget it.</p></article>
-    <article class="card"><span class="ico">🔒</span><h3>Secure &amp; private</h3><p>Encrypted data, automatic backups, and exports whenever you need them.</p></article>
-  </div>
-</section>
-
-<section id="how" class="alt section">
-  <div class="wrap">
-    <h2>How it works</h2>
-    <p class="sub">Three steps from work done to money in the bank.</p>
-    <ol class="steps">
-      <li><b>1</b><h3>Create</h3><p>Build an invoice from a template in under a minute.</p></li>
-      <li><b>2</b><h3>Send</h3><p>Email it or share a link. Clients can pay instantly.</p></li>
-      <li><b>3</b><h3>Follow up</h3><p>Smart reminders chase late payments so you don't have to.</p></li>
-    </ol>
-  </div>
-</section>
-
-<section class="wrap section">
-  <h2>Try the invoice calculator</h2>
-  <p class="sub">A quick feel for the app. Add items and see your total.</p>
-  <div class="calc">
-    <div id="items"></div>
-    <button class="btn btn-ghost btn-sm" id="add">+ Add item</button>
-    <div class="calc-foot">
-      <label>Tax % <input id="tax" type="number" value="10" min="0" max="100"></label>
-      <div class="calc-total">Total: <b id="total">$0.00</b></div>
+  <section class="pad" id="try" style="padding-top:0">
+    <div class="head"><p class="eyebrow">Try it</p><h2>Build an invoice and pick the follow-ups</h2><p>Edit the items on the left. The invoice and reminder schedule update on the right.</p></div>
+    <div class="builder">
+      <div class="panel">
+        <h3>Line items</h3>
+        <div id="items"></div>
+        <button class="btn line sm" id="add" type="button">Add item</button>
+        <div class="two">
+          <label class="f" for="tax">Tax %<input id="tax" type="number" min="0" max="50" step="0.5" value="8"></label>
+          <label class="f" for="client">Client<input id="client" type="text" value="Harbor &amp; Pine Studio"></label>
+        </div>
+        <p class="sched-label">Reminders</p>
+        <div class="chips" id="chips">
+          <button class="chip" type="button" aria-pressed="true" data-day="-3">3 days before</button>
+          <button class="chip" type="button" aria-pressed="true" data-day="0">On due date</button>
+          <button class="chip" type="button" aria-pressed="true" data-day="3">3 days late</button>
+          <button class="chip" type="button" aria-pressed="false" data-day="7">7 days late</button>
+          <button class="chip" type="button" aria-pressed="false" data-day="14">14 days late</button>
+        </div>
+        <p class="note">Net 7 terms. Example data, nothing is saved or sent.</p>
+      </div>
+      <div class="sheet" aria-live="polite">
+        <div class="sheet-top">
+          <div><b>Invoice</b><div class="meta">INV-1043 · Net 7</div></div>
+          <div style="text-align:right"><span class="badge">Draft</span><div class="meta" style="margin-top:8px" id="pvClient"></div></div>
+        </div>
+        <div class="rows" id="pvRows"></div>
+        <p class="eyebrow" style="margin-top:18px">Follow-up plan</p>
+        <ul class="timeline" id="pvTimeline"></ul>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="pricing" class="alt section">
-  <div class="wrap">
-    <h2>Simple pricing</h2>
-    <p class="sub">Start free. Upgrade when you grow.</p>
-    <div class="grid prices">
-      <article class="card"><h3>Free</h3><p class="price">$0</p><ul><li>5 invoices / month</li><li>Basic reminders</li><li>PDF export</li></ul><a class="btn btn-ghost" href="#cta">Get started</a></article>
-      <article class="card featured"><span class="pill">Most popular</span><h3>Pro</h3><p class="price">$12<small>/mo</small></p><ul><li>Unlimited invoices</li><li>Smart follow-up automation</li><li>Online payments</li><li>Recurring billing</li></ul><a class="btn" href="#cta">Start free trial</a></article>
-      <article class="card"><h3>Team</h3><p class="price">$29<small>/mo</small></p><ul><li>Everything in Pro</li><li>5 team members</li><li>Advanced reports</li><li>Priority support</li></ul><a class="btn btn-ghost" href="#cta">Contact us</a></article>
+  <section class="pad" id="pricing" style="padding-top:0">
+    <div class="head"><p class="eyebrow">Pricing</p><h2>Start free, pay when you grow</h2></div>
+    <div class="toggle" role="group" aria-label="Billing period">
+      <button type="button" id="mo" aria-pressed="true">Monthly</button>
+      <button type="button" id="yr" aria-pressed="false">Yearly, 2 months free</button>
     </div>
-  </div>
-</section>
+    <div class="plans">
+      <article class="plan"><h3>Free</h3><div class="price">$0</div>
+        <ul><li>5 invoices a month</li><li>Basic reminders</li><li>PDF export</li></ul><a class="btn line" href="#join">Get started</a></article>
+      <article class="plan pro"><h3>Pro</h3><div class="price"><span id="proPrice">$12</span><small> /month</small></div>
+        <ul><li>Unlimited invoices</li><li>Smart follow-up schedules</li><li>Online card and bank payments</li><li>Recurring billing</li></ul><a class="btn" href="#join">Start free trial</a></article>
+      <article class="plan"><h3>Team</h3><div class="price"><span id="teamPrice">$29</span><small> /month</small></div>
+        <ul><li>Everything in Pro</li><li>5 team members</li><li>Reports by client</li><li>Priority support</li></ul><a class="btn line" href="#join">Talk to us</a></article>
+    </div>
+  </section>
 
-<section class="wrap section">
-  <h2>Loved by freelancers &amp; small teams</h2>
-  <div class="grid">
-    <blockquote class="card">“I used to dread chasing payments. Now it just happens. My average payment time dropped from 24 to 9 days.”<cite>Maya R., designer</cite></blockquote>
-    <blockquote class="card">“Setup took two minutes and the reminders sound polite and human. Clients actually thank me.”<cite>Daniel K., consultant</cite></blockquote>
-    <blockquote class="card">“The dashboard finally shows me what's outstanding. A must for any agency.”<cite>Priya S., agency owner</cite></blockquote>
-  </div>
-</section>
+  <section class="pad" style="padding-top:0">
+    <div class="head"><p class="eyebrow">From users</p><h2>Fewer awkward emails</h2></div>
+    <div class="quotes">
+      <blockquote><p>"My average payment time went from 24 days to 9. I stopped writing 'just checking in' emails."</p><cite><b>Maya Rao</b>, freelance designer</cite></blockquote>
+      <blockquote><p>"The reminders are polite enough that clients thank me for them."</p><cite><b>Daniel Kim</b>, IT consultant</cite></blockquote>
+      <blockquote><p>"I can finally see who owes us money without opening a spreadsheet."</p><cite><b>Priya Shah</b>, agency owner</cite></blockquote>
+    </div>
+  </section>
 
-<section id="faq" class="alt section">
-  <div class="wrap narrow">
-    <h2>FAQ</h2>
-    <details><summary>How do automatic follow-ups work?</summary><p>You choose a schedule, such as 3 days before, on the due date, and 3 and 7 days after. We send polite emails and stop once the invoice is paid.</p></details>
-    <details><summary>Can my clients pay online?</summary><p>Yes. Every invoice has a secure payment link that supports cards and bank transfers.</p></details>
-    <details><summary>Is there a free plan?</summary><p>Yes, the Free plan includes 5 invoices per month with no credit card required.</p></details>
-    <details><summary>Can I cancel anytime?</summary><p>Absolutely. No contracts, and you can export all your data.</p></details>
-  </div>
-</section>
+  <section class="pad" id="faq" style="padding-top:0">
+    <div class="head"><p class="eyebrow">Questions</p><h2>Before you start</h2></div>
+    <div class="faq">
+      <details open><summary>How do follow-ups work?</summary><p>You choose a schedule, for example 3 days before the due date, on the day, and 3 and 7 days after. Each message goes out at the time you set and stops once the invoice is paid.</p></details>
+      <details><summary>Can clients pay online?</summary><p>Yes. Every invoice has a payment link that accepts cards and bank transfers.</p></details>
+      <details><summary>What does the free plan include?</summary><p>Five invoices a month with basic reminders and PDF export. No card needed.</p></details>
+      <details><summary>Can I export my data?</summary><p>Yes. Export all invoices and client records as CSV or PDF at any time.</p></details>
+    </div>
+  </section>
 
-<section id="cta" class="wrap section cta">
-  <h2>Ready to get paid faster?</h2>
-  <p class="sub">Join thousands of freelancers and small businesses.</p>
-  <form id="signup" class="signup">
-    <input type="email" id="email" placeholder="you@example.com" required>
-    <button class="btn" type="submit">Start free trial</button>
-  </form>
-  <p id="msg" class="msg" role="status"></p>
-</section>
-</main>
+  <section class="cta" id="join">
+    <h2>Get your next invoice paid sooner</h2>
+    <p>Create your account in two minutes. Your first five invoices each month are free.</p>
+    <form class="signup" id="signup">
+      <input id="email" type="email" placeholder="you@company.com" aria-label="Email address" required>
+      <button class="btn" type="submit">Start free</button>
+    </form>
+    <p class="msg" id="msg" role="status"></p>
+  </section>
 
-<footer class="foot"><div class="wrap">© <span id="yr"></span> Smart Invoice &amp; Follow Up App. All rights reserved.</div></footer>
-<script src="app.js"></script>
+  <footer><span>Smart Invoice &amp; Follow Up App</span><span class="mono">Sample content for preview</span></footer>
+</div>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var fmt=function(n){return n.toLocaleString('en-US',{style:'currency',currency:'USD'})};
+  var esc=function(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+  var items=[{d:'Website redesign, 3 pages',q:1,p:1800},{d:'Brand guide',q:1,p:650}];
+  var box=$('#items');
+
+  function renderItems(){
+    box.innerHTML=items.map(function(it,i){
+      return '<div class="item"><input aria-label="Description" data-i="'+i+'" data-k="d" value="'+esc(it.d)+'">'+
+      '<input aria-label="Quantity" type="number" min="1" data-i="'+i+'" data-k="q" value="'+it.q+'">'+
+      '<input aria-label="Price" type="number" min="0" step="0.01" data-i="'+i+'" data-k="p" value="'+it.p+'">'+
+      '<button class="x" type="button" aria-label="Remove item" data-x="'+i+'">&times;</button></div>';
+    }).join('');
+  }
+  var days=[-3,0,3];
+  function dateLabel(off){
+    var d=new Date(2026,10,2+7+off);
+    return d.toLocaleDateString('en-US',{day:'2-digit',month:'short'});
+  }
+  function preview(){
+    var sub=items.reduce(function(s,i){return s+(+i.q||0)*(+i.p||0)},0);
+    var t=+$('#tax').value||0, tax=sub*t/100;
+    $('#pvClient').textContent='Billed to '+($('#client').value||'Client');
+    $('#pvRows').innerHTML=items.map(function(i){
+      return '<div class="row"><span>'+esc(i.d||'Item')+((+i.q>1)?' × '+i.q:'')+'</span><span>'+fmt((+i.q||0)*(+i.p||0))+'</span></div>';
+    }).join('')+'<div class="row"><span>Sales tax ('+t+'%)</span><span>'+fmt(tax)+'</span></div>'+
+    '<div class="row total"><span>Total due</span><span>'+fmt(sub+tax)+'</span></div>';
+    var all=[-3,0,3,7,14];
+    var html='<li class="on"><span></span><span>Invoice sent</span><span class="when">02 Nov</span></li>';
+    all.forEach(function(d){
+      var on=days.indexOf(d)>-1;
+      var name=d<0?'Reminder: due in '+(-d)+' days':d===0?'Reminder: due today':'Follow up: '+d+' days late';
+      html+='<li class="'+(on?'':'off')+'"><span></span><span>'+name+'</span><span class="when">'+(on?dateLabel(d):'skipped')+'</span></li>';
+    });
+    $('#pvTimeline').innerHTML=html;
+  }
+  box.addEventListener('input',function(e){
+    var t=e.target,i=t.dataset.i;if(i==null)return;
+    items[i][t.dataset.k]=t.dataset.k==='d'?t.value:parseFloat(t.value)||0;preview();
+  });
+  box.addEventListener('click',function(e){
+    var x=e.target.dataset.x;if(x==null)return;
+    if(items.length>1){items.splice(+x,1);renderItems();preview();}
+  });
+  $('#add').onclick=function(){items.push({d:'New item',q:1,p:100});renderItems();preview();};
+  $('#tax').oninput=preview;$('#client').oninput=preview;
+  $('#chips').addEventListener('click',function(e){
+    var b=e.target.closest('.chip');if(!b)return;
+    var on=b.getAttribute('aria-pressed')!=='true';
+    b.setAttribute('aria-pressed',on);
+    var d=+b.dataset.day;
+    days=days.filter(function(x){return x!==d});if(on)days.push(d);
+    preview();
+  });
+  renderItems();preview();
+
+  // pricing toggle
+  function plans(yearly){
+    $('#proPrice').textContent=yearly?'$10':'$12';
+    $('#teamPrice').textContent=yearly?'$24':'$29';
+    $('#mo').setAttribute('aria-pressed',!yearly);$('#yr').setAttribute('aria-pressed',yearly);
+  }
+  $('#mo').onclick=function(){plans(false)};$('#yr').onclick=function(){plans(true)};
+
+  // signup
+  $('#signup').addEventListener('submit',function(e){
+    e.preventDefault();
+    $('#msg').textContent='Thanks. This is a preview, so nothing was sent to '+$('#email').value+'.';
+  });
+})();
+</script>
 </body>
 </html>
